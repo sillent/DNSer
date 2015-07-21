@@ -11,7 +11,11 @@
  * 
  */
 int main(int argc, char** argv) {
-    open_capture();
+    printf("arg: %s\n", argv[1]);
+    char *devName=argv[1];
+    if (find_device(devName)==DEVFND) {
+      start_sniff(devName);
+    }
     return (EXIT_SUCCESS);
 }
 
