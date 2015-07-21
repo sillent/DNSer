@@ -35,6 +35,8 @@ struct sniff_ip {
 #define IP_V(ip)		(((ip)->ip_vhl) >> 4)
 
 	/* TCP header */
+#define N2Hl(x) ntohl(x)
+#define N2Hs(x) ntohs(x)
 typedef u_int tcp_seq;
 
 struct sniff_tcp {
@@ -58,15 +60,21 @@ struct sniff_tcp {
   u_short th_sum;		/* checksum */
   u_short th_urp;		/* urgent pointer */
 };
+struct sniff_udp {
+  u_short src_port;
+  u_short dst_port;
+  u_short len;
+  u_short cksm;
+};
     
-    #define SIZE_ETHERNET 14
+#define SIZE_ETHERNET 14
+#define SIZE_UDP 8
+const struct sniff_ethernet *ethernet; /* The ethernet header */
+const struct sniff_ip *ip; /* The IP header */
+const struct sniff_tcp *tcp; /* The TCP header */
+const char *payload; /* Packet payload */
 
-	const struct sniff_ethernet *ethernet; /* The ethernet header */
-	const struct sniff_ip *ip; /* The IP header */
-	const struct sniff_tcp *tcp; /* The TCP header */
-	const char *payload; /* Packet payload */
-
-	u_int size_ip;
-	u_int size_tcp;
+u_int size_ip;
+u_int size_tcp;
 
 
