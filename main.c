@@ -12,9 +12,13 @@
  */
 int main(int argc, char** argv) {
     printf("arg: %s\n", argv[1]);
-    char *devName=argv[1];
-    if (find_device(devName)==DEVFND) {
-      start_sniff(devName);
+    if (argc>=2) {
+      size_t argLen=strlen(argv[1]);
+      char *devName=malloc(argLen+1);
+      strncpy(devName,argv[1],argLen);
+      if (find_device(devName)==DEVFND) {
+        start_sniff(devName);
+      }
     }
     return (EXIT_SUCCESS);
 }
