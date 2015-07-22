@@ -14,6 +14,6 @@ typedef struct {
 void doworker(pcap_packet_t *packet_t);
 void *threadWorker(void *arg);
 
-void tcpWorker(struct sniff_tcp *tcp);
-void udpWorker(struct sniff_udp *udp);
+void tcpWorker(void *arg);
+void udpWorker(void *arg);
 

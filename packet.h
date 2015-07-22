@@ -67,6 +67,24 @@ struct sniff_udp {
   u_short cksm;
 };
     
+struct dns_flags_t {
+  u_char qr:1;
+  u_char opcode:4;
+  u_char aa:1;
+  u_char tc:1;
+  u_char rd:1;
+  u_char ra:1;
+  u_char z:3;
+  u_char rcode:4;
+};
+struct sniff_dns_header_t {
+  u_short t_id;
+  struct dns_flags_t flags;
+  u_short question;
+  u_short ans_rr;
+  u_short aut_rr;
+  u_short add_rr;
+};
 #define SIZE_ETHERNET 14
 #define SIZE_UDP 8
 const struct sniff_ethernet *ethernet; /* The ethernet header */

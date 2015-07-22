@@ -28,12 +28,14 @@ void *threadWorker(void *arg) {
   size_ip=IP_HL(ip)*4;
   switch(ip->ip_p) {
     case 6: {
-      struct sniff_tcp *tcp=(struct sniff_tcp *)(ar->data+SIZE_ETHERNET+size_ip);
+//      struct sniff_tcp *tcp=(struct sniff_tcp *)(ar->data+SIZE_ETHERNET+size_ip);
+      void *tcp=(void *)(ar->data+SIZE_ETHERNET+size_ip);
       tcpWorker(tcp);
       break;
     }
     case 17: {
-      struct sniff_udp *udp=(struct sniff_udp *)(ar->data+SIZE_ETHERNET+size_ip);
+//      struct sniff_udp *udp=(struct sniff_udp *)(ar->data+SIZE_ETHERNET+size_ip);
+      void *udp=(void *)(ar->data+SIZE_ETHERNET+size_ip);
       udpWorker(udp);
       break;
     }
@@ -42,8 +44,17 @@ void *threadWorker(void *arg) {
   }
 }
 
-void tcpWorker(struct sniff_tcp *tcp) {
+void tcpWorker(void *tcp) {
+  struct sniff_tcp *tcp_t=(struct sniff_tcp *)tcp;
+  size_tcp=TH_OFF(tcp_t)*4;
+  struct sniff_dns_header_t *dns_header=(struct sniff_dns_header_t *)(tcp+size_tcp);
+  printf("tid n2h: %u\n", N2Hs(dns_header->t_id));
+  
 }
-void udpWorker(struct sniff_udp *udp) {
-  printf("src: %u dst: %u\n",ntohs(udp->src_port),ntohs(udp->dst_port));
+void udpWorker(void *udp) {
+  struct sniff_udp *udp_t=(struct sniff_udp *)udp;
+//  printf("src: %u dst: %u\n",ntohs(udp_t->src_port),ntohs(udp_t->dst_port));
+  struct sniff_dns_header_t *dns_header=(struct sniff_dns_header_t *)(udp+SIZE_UDP);
+
+  printf("tid n2h :%u\n",N2Hs(dns_header->t_id));
 }
