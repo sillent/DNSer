@@ -67,23 +67,21 @@ struct sniff_udp {
   u_short cksm;
 };
     
-struct dns_flags_t {
-  u_char qr:1;
-  u_char opcode:4;
-  u_char aa:1;
-  u_char tc:1;
-  u_char rd:1;
-  u_char ra:1;
-  u_char z:3;
-  u_char rcode:4;
-};
 struct sniff_dns_header_t {
-  u_short t_id;
-  struct dns_flags_t flags;
-  u_short question;
-  u_short ans_rr;
-  u_short aut_rr;
-  u_short add_rr;
+  uint16_t id;
+  uint16_t flags;
+    /* number of entries in the question section */
+  uint16_t qdcount;
+    /* number of resource records in the answer section */
+  uint16_t ancount;
+    /* number of name server resource records in the authority records section*/
+  uint16_t nscount;
+    /* number of resource records in the additional records section */
+  uint16_t arcount;
+};
+struct sniff_dns_header_tcp_t {
+  u_short len;
+  struct sniff_dns_header_t normal_dns_header;
 };
 #define SIZE_ETHERNET 14
 #define SIZE_UDP 8
@@ -95,4 +93,5 @@ const char *payload; /* Packet payload */
 u_int size_ip;
 u_int size_tcp;
 
-
+#define DNS_QUERIE 0
+#define DNS_RESPONSE 1

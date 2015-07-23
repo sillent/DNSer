@@ -7,8 +7,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/santa/work/projects/DNSer/worker.h</file>
             <file>file:/home/santa/work/projects/DNSer/capturing.c</file>
+            <file>file:/home/santa/work/projects/DNSer/find_iface.c</file>
+            <file>file:/home/santa/work/projects/DNSer/packet.h</file>
             <file>file:/home/santa/work/projects/DNSer/main.c</file>
+            <file>file:/home/santa/work/projects/DNSer/worker.c</file>
             <file>file:/home/santa/work/projects/DNSer/main.h</file>
             <file>file:/home/santa/work/projects/DNSer/packet.c</file>
         </group>
