@@ -85,6 +85,10 @@ struct sniff_dns_header_t {
   u_short aut_rr;
   u_short add_rr;
 };
+struct sniff_dns_header_tcp_t {
+  u_short len;
+  struct sniff_dns_header_t normal_dns_header;
+};
 #define SIZE_ETHERNET 14
 #define SIZE_UDP 8
 const struct sniff_ethernet *ethernet; /* The ethernet header */
@@ -94,5 +98,3 @@ const char *payload; /* Packet payload */
 
 u_int size_ip;
 u_int size_tcp;
-
-

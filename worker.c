@@ -10,15 +10,15 @@ void doworker(pcap_packet_t *packet) {
   pthread_t thread[4];
   pthread_attr_t attr;
   pthread_attr_init(&attr);
-  pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
-  printf("thread go %d\n", counter);
+  pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_JOINABLE);
+//  printf("thread go %d\n", counter);
   if (counter>3) {
     counter=0;
   } else {
     counter++;
   }
   pthread_create(&thread[counter],&attr,threadWorker,(void*)packet);
-//  pthread_join(thread,NULL);
+  pthread_join(thread[counter],NULL);
 }
 
 void *threadWorker(void *arg) {
@@ -47,14 +47,17 @@ void *threadWorker(void *arg) {
 void tcpWorker(void *tcp) {
   struct sniff_tcp *tcp_t=(struct sniff_tcp *)tcp;
   size_tcp=TH_OFF(tcp_t)*4;
-  struct sniff_dns_header_t *dns_header=(struct sniff_dns_header_t *)(tcp+size_tcp);
-  printf("tid n2h: %u\n", N2Hs(dns_header->t_id));
-  
+
+  // check PSH+ACK flags set
+  if (tcp_t->th_flags == (TH_ACK+TH_PUSH)) {
+    struct sniff_dns_header_tcp_t *dns_header=(struct sniff_dns_header_tcp_t *)(tcp+size_tcp);
+    printf("tid n2h: %u\n", N2Hs(dns_header->normal_dns_header.t_id));
+    printf("qr: %u\n",N2Hs(dns_header->normal_dns_header.flags.qr));
+  }
 }
 void udpWorker(void *udp) {
   struct sniff_udp *udp_t=(struct sniff_udp *)udp;
 //  printf("src: %u dst: %u\n",ntohs(udp_t->src_port),ntohs(udp_t->dst_port));
   struct sniff_dns_header_t *dns_header=(struct sniff_dns_header_t *)(udp+SIZE_UDP);
-
   printf("tid n2h :%u\n",N2Hs(dns_header->t_id));
 }
