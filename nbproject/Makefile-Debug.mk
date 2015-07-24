@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/capturing.o \
 	${OBJECTDIR}/error.o \
 	${OBJECTDIR}/find_iface.o \
+	${OBJECTDIR}/listener.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/packet.o \
 	${OBJECTDIR}/worker.o
@@ -81,6 +82,11 @@ ${OBJECTDIR}/find_iface.o: find_iface.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/find_iface.o find_iface.c
+
+${OBJECTDIR}/listener.o: listener.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/listener.o listener.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}

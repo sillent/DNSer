@@ -11,7 +11,15 @@
  * 
  */
 int main(int argc, char** argv) {
-    printf("arg: %s\n", argv[1]);
+  pid_t pid;
+  pid=fork();
+  if (pid<0) {
+    exit(EXIT_FAILURE);
+  }
+  if (pid>0) {
+    exit(EXIT_SUCCESS);
+  }
+//    printf("arg: %s\n", argv[1]);
     if (argc>=2) {
       size_t argLen=strlen(argv[1]);
       char *devName=malloc(argLen+1);

@@ -5,13 +5,15 @@
 #include "worker.h"
 
 static int counter=0;
-static long long dnsIncoming;
 
+extern pthread_mutex_t mutexsum;
+extern pthread_mutexattr_t mutexattr;
 void doworker(pcap_packet_t *packet) {
   pthread_t thread[4];
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_JOINABLE);
+  pthread_mutex_init(&mutexsum,NULL);
 //  printf("thread go %d\n", counter);
   if (counter>3) {
     counter=0;
@@ -54,17 +56,32 @@ void tcpWorker(void *tcp) {
   // check PSH+ACK flags set
   if (tcp_t->th_flags == (TH_ACK+TH_PUSH)) {
     struct sniff_dns_header_tcp_t *dns_header=(struct sniff_dns_header_tcp_t *)(tcp+size_tcp);
-    
-    short qr=N2Hs(dns_header->normal_dns_header.flags) >> 15;   // Querie or Response
-    if (qr == DNS_RESPONSE) {
-      
+    pthread_mutex_lock(&mutexsum);
+    short qr=N2Hs(dns_header->normal_dns_header.flags) >> 15;   /* Querie or Response */
+    if (qr != DNS_RESPONSE && qr != DNS_QUERIE) {
+      return;
     }
+    if (qr == DNS_RESPONSE) {
+      dnsOutgoing++;
+    } else if (qr==DNS_QUERIE) {
+      dnsIncoming++;
+    }
+    pthread_mutex_unlock(&mutexsum);
   }
 }
 void udpWorker(void *udp) {
   struct sniff_udp *udp_t=(struct sniff_udp *)udp;
-//  printf("src: %u dst: %u\n",ntohs(udp_t->src_port),ntohs(udp_t->dst_port));
   struct sniff_dns_header_t *dns_header=(struct sniff_dns_header_t *)(udp+SIZE_UDP);
-  printf("tid n2h :%u\n",N2Hs(dns_header->id));
-  printf("qr: %u\n",N2Hs(dns_header->flags) >> 15);
+
+  pthread_mutex_lock(&mutexsum);
+  short qr=N2Hs(dns_header->flags)>>15;     /* Querie or Response */
+  if (qr!=DNS_RESPONSE && qr!=DNS_QUERIE) {
+    return;
+  }
+  if (qr==DNS_RESPONSE) {
+    dnsOutgoing++;
+  } else if (qr==DNS_QUERIE) {
+    dnsIncoming++;
+  }
+  pthread_mutex_unlock(&mutexsum);
 }
