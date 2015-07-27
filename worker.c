@@ -5,6 +5,8 @@
 #include "worker.h"
 
 static int counter=0;
+uint64_t dnsIncoming;
+uint64_t dnsOutgoing;
 
 extern pthread_mutex_t mutexsum;
 extern pthread_mutexattr_t mutexattr;
@@ -63,7 +65,8 @@ void tcpWorker(void *tcp) {
     }
     if (qr == DNS_RESPONSE) {
       dnsOutgoing++;
-    } else if (qr==DNS_QUERIE) {
+    } 
+    if (qr==DNS_QUERIE) {
       dnsIncoming++;
     }
     pthread_mutex_unlock(&mutexsum);
@@ -80,7 +83,8 @@ void udpWorker(void *udp) {
   }
   if (qr==DNS_RESPONSE) {
     dnsOutgoing++;
-  } else if (qr==DNS_QUERIE) {
+  }
+  if (qr==DNS_QUERIE) {
     dnsIncoming++;
   }
   pthread_mutex_unlock(&mutexsum);
