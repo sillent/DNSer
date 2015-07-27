@@ -18,7 +18,7 @@ pcap_if_t *find_devices() {
     int retVal=pcap_findalldevs(&device,errbuf);
     if (retVal)
     {
-        fprintf(stderr,"Cannot find any capturing device. %s", errbuf);
+        fprintf(stderr,"Cannot find any capturing device. %s\n", errbuf);
         return NULL;
     } else {
         return device;
