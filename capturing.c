@@ -18,7 +18,7 @@ void start_sniff(char* devName) {
     network=0;
   }
   
-  handle=pcap_open_live(devName,BUFSIZ,1,0,errbuf);
+  handle=pcap_open_live(devName,BUFSIZ,0,0,errbuf);
   if (handle==NULL) {
     fprintf(stderr,"FAIL. Can't start sniffing on dev %s\n",devName);
     exit(1);

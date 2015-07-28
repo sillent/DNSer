@@ -8,8 +8,8 @@
 #include "main.h"
 #include "packet.h"
 
-static unsigned long long dnsIncoming;
-static unsigned long long dnsOutgoing;
+extern uint64_t dnsIncoming;
+extern uint64_t dnsOutgoing;
 
 pthread_mutex_t mutexsum;
 pthread_mutexattr_t mutexattr;

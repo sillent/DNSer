@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include <netinet/udp.h>
 #include <net/if.h>
 #include <string.h>
@@ -32,15 +33,6 @@ void start_sniff(char *devName);    // capturing.c
 
 void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-
-
-#ifdef	__cplusplus
-}
-#endif
 
 #endif	/* MAIN_H */
 
