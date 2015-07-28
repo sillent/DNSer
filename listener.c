@@ -27,33 +27,24 @@ void * listener() {
 
     socklen_t sendsize=sizeof(client_addr);
     while (1) {
-//        int recl=recvfrom(sockfd,msg,sizeof(struct mesg_t),0,(struct sockaddr *)&client_addr,&sendsize);
-//        if (recl >= 0) {
-//            grepp(*msg,client_addr);
-//        }
-//      printf("resp:%lu resp:%lu\n",dnsOutgoing);
-      grepp(*msg,client_addr);
-      sleep(1);
+        int recl=recvfrom(sockfd,msg,sizeof(struct mesg_t),0,(struct sockaddr *)&client_addr,&sendsize);
+        if (recl >= 0) {
+            grepp(*msg,client_addr);
+        }
     }
     return (void*)1;
 }
 void grepp(struct mesg_t data,struct sockaddr_in respondto) {
-    struct mesg_t d=data;
-    char msg[255];
-    snprintf(msg,255,"resp:%lu resp:%lu\n",dnsOutgoing,dnsOutgoing);
-    printf("%s",msg);
-    printf("inc address:%p\n",&dnsIncoming);
-    printf("out address:%p\n",&dnsOutgoing);
-    printf("inc:%p out:%p\n", &dnsIncoming,&dnsOutgoing);
-    printf("inc:%lu out:%lu\n", dnsIncoming,dnsOutgoing);
-//    if (strcmp(d.mes,"get")==0) {
-//      sendmsgto(respondto,dnsi)
-//    }
-    
+    if (strncmp(data.mes,"req",3)==0) {
+      sendmsgto(respondto,dnsIncoming);
+    } 
+    if (strncmp(data.mes,"res",3)==0) {
+      sendmsgto(respondto,dnsOutgoing);
+    }
 }
-int sendmsgto(struct sockaddr_in to, u_char *mesage) {
+int sendmsgto(struct sockaddr_in to, uint64_t mesage) {
 //    long long t=htobe64(message);
-  uint64_t t;
+  uint64_t t=htobe64(mesage);
     int rs=sendto(sockfd,&t,sizeof(t),0,(struct sockaddr *)&to,sizeof(to));
 //    printf("send socket: %d\n",rs);
     return rs;

@@ -15,7 +15,7 @@ struct mesg_t {
 };
 #define SERVER_PORT 5005
 void * listener();
-int sendmsgto(struct sockaddr_in to, u_char *mesage);
+int sendmsgto(struct sockaddr_in to, uint64_t mesage);
 void grepp(struct mesg_t data,struct sockaddr_in respondto);
 
 #endif	/* LISTENER_H */
