@@ -4,6 +4,10 @@
 static int sockfd;
 uint64_t dnsIncoming;
 uint64_t dnsOutgoing;
+pcap_t *handle;
+uint64_t ps_recv;
+uint64_t ps_drop;
+uint64_t ps_ifdrop;
 void * listener() {
   sockfd=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
     if (sockfd == -1) {
@@ -35,17 +39,37 @@ void * listener() {
     return (void*)1;
 }
 void grepp(struct mesg_t data,struct sockaddr_in respondto) {
-    if (strncmp(data.mes,"req",3)==0) {
-      sendmsgto(respondto,dnsIncoming);
-    } 
-    if (strncmp(data.mes,"res",3)==0) {
-      sendmsgto(respondto,dnsOutgoing);
-    }
+  doStat();
+  if (strncmp(data.mes,"req",3)==0) {
+    sendmsgto(respondto,dnsIncoming);
+  } 
+  if (strncmp(data.mes,"res",3)==0) {
+    sendmsgto(respondto,dnsOutgoing);
+  }
+  if (strncmp(data.mes,"st_ifdrop",9)==0) {
+    sendmsgto(respondto,ps_ifdrop);
+  }
+  if (strncmp(data.mes,"st_drop",7)==0) {
+      sendmsgto(respondto,ps_drop);
+  }
+  if (strncmp(data.mes,"st_recv",7)==0) {
+      sendmsgto(respondto,ps_recv);
+  }
 }
 int sendmsgto(struct sockaddr_in to, uint64_t mesage) {
-//    long long t=htobe64(message);
   uint64_t t=htobe64(mesage);
-    int rs=sendto(sockfd,&t,sizeof(t),0,(struct sockaddr *)&to,sizeof(to));
+  int rs=sendto(sockfd,&t,sizeof(t),0,(struct sockaddr *)&to,sizeof(to));
 //    printf("send socket: %d\n",rs);
-    return rs;
+  return rs;
+}
+
+void doStat() {
+  struct pcap_stat stat;
+  memset(&stat,0,sizeof(struct pcap_stat));
+  if (pcap_stats(handle,&stat)==-1) {
+    printf("error stat\n");
+  }
+  ps_drop=stat.ps_drop;
+  ps_ifdrop=stat.ps_ifdrop;
+  ps_recv=stat.ps_recv;
 }

@@ -7,17 +7,18 @@
 static int counter=0;
 uint64_t dnsIncoming;
 uint64_t dnsOutgoing;
+#define THREADNUM 3
 
 extern pthread_mutex_t mutexsum;
 extern pthread_mutexattr_t mutexattr;
 void doworker(pcap_packet_t *packet) {
-  pthread_t thread[4];
+  pthread_t thread[THREADNUM];
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_JOINABLE);
   pthread_mutex_init(&mutexsum,NULL);
 //  printf("thread go %d\n", counter);
-  if (counter>3) {
+  if (counter>THREADNUM) {
     counter=0;
   } else {
     counter++;

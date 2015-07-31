@@ -25,6 +25,7 @@
 #define DEVNF 5
 
 char errbuf[256];
+extern pcap_t *handle;
 
 void error(int code);
 int find_device(char *devName);  // search sepcific interface

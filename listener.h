@@ -17,6 +17,6 @@ struct mesg_t {
 void * listener();
 int sendmsgto(struct sockaddr_in to, uint64_t mesage);
 void grepp(struct mesg_t data,struct sockaddr_in respondto);
-
+void doStat();
 #endif	/* LISTENER_H */
 
