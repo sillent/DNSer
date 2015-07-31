@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
   if (pid>0) {
     exit(EXIT_SUCCESS);
   }
-    printf("arg: %s\n", argv[1]);
+//    printf("arg: %s\n", argv[1]);
     if (argc>=2) {
       pthread_t thread_listener;
       pthread_create(&thread_listener,NULL,listener,NULL);
