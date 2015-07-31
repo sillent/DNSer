@@ -22,7 +22,7 @@ void start_sniff(char* devName) {
   }
   
   handle=pcap_create(devName,errbuf);
-  if (pcap_set_buffer_size(handle,BUFERLEN*4)!=0) {
+  if (pcap_set_buffer_size(handle,BUFERLEN)!=0) {
     fprintf(stderr,"FAIL.Can't set buffer size\n");
     exit(1);
   }
