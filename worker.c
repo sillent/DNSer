@@ -7,15 +7,15 @@
 static int counter=0;
 uint64_t dnsIncoming;
 uint64_t dnsOutgoing;
-#define THREADNUM 3
+#define THREADNUM 11
 
-extern pthread_mutex_t mutexsum;
-extern pthread_mutexattr_t mutexattr;
+pthread_mutex_t mutexsum;
+pthread_mutexattr_t mutexattr;
 void doworker(pcap_packet_t *packet) {
   pthread_t thread[THREADNUM];
   pthread_attr_t attr;
   pthread_attr_init(&attr);
-  pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_JOINABLE);
+  pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
   pthread_mutex_init(&mutexsum,NULL);
 //  printf("thread go %d\n", counter);
   if (counter>THREADNUM) {
@@ -23,8 +23,9 @@ void doworker(pcap_packet_t *packet) {
   } else {
     counter++;
   }
+//  printf("create threadid :%d and threadaddress:%p\n",counter,&thread[counter]);
   pthread_create(&thread[counter],&attr,threadWorker,(void*)packet);
-  pthread_join(thread[counter],NULL);
+//  pthread_join(thread[counter],NULL);
   pthread_attr_destroy(&attr);
 }
 

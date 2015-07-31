@@ -6,7 +6,7 @@
  */
 #include <netinet/in.h>
 #define ETHER_ADDR_LEN	6
-
+void *startDoWorker(void *arg);
 	/* Ethernet header */
 struct sniff_ethernet {
   u_char ether_dhost[ETHER_ADDR_LEN]; /* Destination host address */
