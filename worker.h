@@ -7,6 +7,8 @@
 
 #include "main.h"
 #include "packet.h"
+#include <netinet/ip.h>
+#include <arpa/inet.h>
 
 extern uint64_t dnsIncoming;
 extern uint64_t dnsOutgoing;
@@ -19,8 +21,8 @@ typedef struct {
   struct pcap_pkthdr header;
   u_char data[];
 } pcap_packet_t;
-void doworker(pcap_packet_t *packet_t);
-void *threadWorker(void *arg);
+void *doworker(void *packet_t);
+void threadWorker(void *arg);
 
 void tcpWorker(void *arg);
 void udpWorker(void *arg);
