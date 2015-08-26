@@ -1,6 +1,10 @@
 #include <sys/types.h>
 
 #include "listener.h"
+#include <signal.h>
+
+void sighandler(int signum);
+
 static int sockfd;
 uint64_t dnsIncoming;
 uint64_t dnsOutgoing;
@@ -8,7 +12,10 @@ pcap_t *handle;
 uint64_t ps_recv;
 uint64_t ps_drop;
 uint64_t ps_ifdrop;
+
 void * listener() {
+  signal(SIGINT,sighandler);
+  
   sockfd=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
     if (sockfd == -1) {
         fprintf(stderr,"Cannot create socket on listener()\n");
@@ -72,4 +79,11 @@ void doStat() {
   ps_drop=stat.ps_drop;
   ps_ifdrop=stat.ps_ifdrop;
   ps_recv=stat.ps_recv;
+}
+
+void sighandler(int signum) {
+  if (signum=SIGINT) {
+    printf("received SIGINT. EXITED\n");
+    exit(EXIT_FAILURE);
+  }
 }

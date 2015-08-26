@@ -1,9 +1,12 @@
 #include <sys/types.h>
-
+#include "worker.h"
 #include "main.h"
 #define BUFERLEN 4194304
 #define SNAPLEN 1500
+#define PROMISC 0
+
 pcap_t *handle;
+pthread_mutex_t mutexsum;
 void start_sniff(char* devName) {
 //  pcap_t *handle;  Go to global
 
@@ -22,9 +25,9 @@ void start_sniff(char* devName) {
   }
   
   handle=pcap_create(devName,errbuf);
-  if (pcap_set_buffer_size(handle,BUFERLEN*4)!=0) {
+  if (pcap_set_buffer_size(handle,BUFERLEN)!=0) {
     fprintf(stderr,"FAIL.Can't set buffer size\n");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   if (pcap_set_promisc(handle,0)!=0) {
     fprintf(stderr,"FAIL.Can't set no promisc\n");
@@ -38,11 +41,10 @@ void start_sniff(char* devName) {
     fprintf(stderr,"FAIL.Can't set timeout\n");
     exit(EXIT_FAILURE);
   }
-//  handle=pcap_open_live(devName,1500,0,0,errbuf);
-//  if (handle==NULL) {
-//    fprintf(stderr,"FAIL. Can't start sniffing on dev %s\n",devName);
-//    exit(1);
-//  }
+  if (pcap_set_promisc(handle,PROMISC)!=0) {
+    fprintf(stderr,"FAIL. Can't set promisc mode value\n");
+    exit(EXIT_FAILURE);
+  }
   if (pcap_activate(handle)!=0) {
     fprintf(stderr, "FAIL.Can't activate handle\n");
     exit(EXIT_FAILURE);
@@ -53,8 +55,10 @@ void start_sniff(char* devName) {
   }
   if (pcap_setfilter(handle,&filter_program)==-1) {
     fprintf(stderr,"FAIL. Can't set filter\n");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   
+  // go sniff
+  pthread_mutex_init(&mutexsum,NULL);
   pcap_loop(handle,0,packet_sniff,NULL);
 }

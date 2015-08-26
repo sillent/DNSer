@@ -23,7 +23,10 @@ int main(int argc, char** argv) {
 //    printf("arg: %s\n", argv[1]);
     if (argc>=2) {
       pthread_t thread_listener;
-      pthread_create(&thread_listener,NULL,listener,NULL);
+      pthread_attr_t attr;
+      pthread_attr_init(&attr);
+      pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
+      pthread_create(&thread_listener,&attr,listener,NULL);
       size_t argLen=strlen(argv[1]);
       char *devName=malloc(argLen+1);
       strncpy(devName,argv[1],argLen);
