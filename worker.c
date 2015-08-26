@@ -9,30 +9,6 @@ uint64_t dnsOutgoing;
 
 pthread_mutex_t mutexsum;
 pthread_mutexattr_t mutexattr;
-void *doworker(void *packet) {
-  /* thread created int packet.c 
-  pthread_t thread[THREADNUM];
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
-  pthread_mutex_init(&mutexsum,NULL);
-//  printf("thread go %d\n", counter);
-  if (counter>THREADNUM) {
-    counter=0;
-  } else {
-    counter++;
-  }
-//  printf("create threadid :%d and threadaddress:%p\n",counter,&thread[counter]);
-  pthread_create(&thread[counter],&attr,threadWorker,(void*)packet);
-//  pthread_join(thread[counter],NULL);
-  pthread_attr_destroy(&attr);
-   */
-//  pthread_mutex_init(&mutexsum,NULL);
-  threadWorker(packet);
-//  pthread_mutex_destroy(&mutexsum);
-//  pthread_exit(NULL);
-}
-
 void threadWorker(void *arg) {
   
   pcap_packet_t *ar=(pcap_packet_t *)arg;
@@ -88,18 +64,18 @@ void udpWorker(void *udp) {
   struct sniff_dns_header_t *dns_header=(struct sniff_dns_header_t *)(udp+SIZE_UDP);
   short qr=N2Hs(dns_header->flags)>>15;     /* Querie or Response */
 //    printf("mutex: %p\n",&mutexsum);
-  int lc=pthread_mutex_lock(&mutexsum);
-  if (lc!=0) {
-    fprintf(stderr, "Error lock: lc=%d\n",lc);
-  }
+//  int lc=pthread_mutex_lock(&mutexsum);
+//  if (lc!=0) {
+//    fprintf(stderr, "Error lock: lc=%d\n",lc);
+//  }
   if (qr==DNS_RESPONSE) {
     dnsOutgoing++;
   }
   if (qr==DNS_QUERIE) {
     dnsIncoming++;
   }
-  int ul=pthread_mutex_unlock(&mutexsum);
-  if (ul!=0) {
-    fprintf(stderr,"Error unlock: ul=%d\n",ul); 
-  }
+//  int ul=pthread_mutex_unlock(&mutexsum);
+//  if (ul!=0) {
+//    fprintf(stderr,"Error unlock: ul=%d\n",ul); 
+//  }
 }

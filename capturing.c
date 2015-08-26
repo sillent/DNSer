@@ -3,7 +3,7 @@
 #include "main.h"
 #define BUFERLEN 4194304
 #define SNAPLEN 1500
-#define PROMISC 1
+#define PROMISC 0
 
 pcap_t *handle;
 pthread_mutex_t mutexsum;
