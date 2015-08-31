@@ -7,6 +7,7 @@
 
 pcap_t *handle;
 pthread_mutex_t mutexsum;
+
 void start_sniff(char* devName) {
 //  pcap_t *handle;  Go to global
 

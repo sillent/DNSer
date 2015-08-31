@@ -1,6 +1,7 @@
-
-
 #include "worker.h"
+
+void addToList(void *arg);
+void removeFromList(void *arg);
 
 static int counter=0;
 uint64_t dnsIncoming;
@@ -9,9 +10,12 @@ uint64_t dnsOutgoing;
 
 pthread_mutex_t mutexsum;
 pthread_mutexattr_t mutexattr;
+
+struct timeval tvReq;
 void threadWorker(void *arg) {
   
   pcap_packet_t *ar=(pcap_packet_t *)arg;
+  tvReq=ar->header.ts;
   ethernet=(struct sniff_ethernet *)(ar->data);
   ip=(struct sniff_ip *)(ar->data+SIZE_ETHERNET);
   size_ip=IP_HL(ip)*4;
@@ -42,20 +46,11 @@ void tcpWorker(void *tcp) {
   if (tcp_t->th_flags == (TH_ACK+TH_PUSH)) {
     struct sniff_dns_header_tcp_t *dns_header=(struct sniff_dns_header_tcp_t *)(tcp+size_tcp);    
     short qr=N2Hs(dns_header->normal_dns_header.flags) >> 15;   /* Querie or Response */
-//    printf("mutex: %p\n",&mutexsum);
-    int lc=pthread_mutex_lock(&mutexsum);
-    if (lc!=0) {
-      fprintf(stderr, "Error lock: lc=%d\n",lc);
-    }
     if (qr == DNS_RESPONSE) {
       dnsOutgoing++;
     } 
     if (qr==DNS_QUERIE) {
       dnsIncoming++;
-    }
-    int ul=pthread_mutex_unlock(&mutexsum);
-    if (ul!=0) {
-      fprintf(stderr,"Error unlock: ul=%d\n",ul);
     }
   }
 }
@@ -63,19 +58,28 @@ void udpWorker(void *udp) {
   struct sniff_udp *udp_t=(struct sniff_udp *)udp;
   struct sniff_dns_header_t *dns_header=(struct sniff_dns_header_t *)(udp+SIZE_UDP);
   short qr=N2Hs(dns_header->flags)>>15;     /* Querie or Response */
-//    printf("mutex: %p\n",&mutexsum);
-//  int lc=pthread_mutex_lock(&mutexsum);
-//  if (lc!=0) {
-//    fprintf(stderr, "Error lock: lc=%d\n",lc);
-//  }
   if (qr==DNS_RESPONSE) {
     dnsOutgoing++;
   }
   if (qr==DNS_QUERIE) {
     dnsIncoming++;
   }
-//  int ul=pthread_mutex_unlock(&mutexsum);
-//  if (ul!=0) {
-//    fprintf(stderr,"Error unlock: ul=%d\n",ul); 
-//  }
+}
+
+void requestResponse(void* arg,int type) {
+  // type: 0 - REQ, 1 - RES
+  if (type==0) {
+    addToList(arg);
+  }
+  if (type==1) {
+    removeFromList(arg);
+  }
+}
+
+void addToList(void *arg) {
+  
+}
+
+void removeFromList(void *arg) {
+  
 }
