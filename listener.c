@@ -5,6 +5,7 @@
 
 void sighandler(int signum);
 
+rtt_t    dnsRTT;
 static int sockfd;
 uint64_t dnsIncoming;
 uint64_t dnsOutgoing;
@@ -61,6 +62,24 @@ void grepp(struct mesg_t data,struct sockaddr_in respondto) {
   }
   if (strncmp(data.mes,"st_recv",7)==0) {
       sendmsgto(respondto,ps_recv);
+  }
+  if (strncmp(data.mes,"time_t",6)==0) {
+    sendmsgto(respondto,dnsRTT.tiny);
+  }
+  if (strncmp(data.mes,"time_s",6)==0) {
+    sendmsgto(respondto,dnsRTT.small);
+  }
+  if (strncmp(data.mes,"time_l",6)==0) {
+    sendmsgto(respondto,dnsRTT.litle);
+  }
+  if (strncmp(data.mes,"time_m",6)==0) {
+    sendmsgto(respondto,dnsRTT.middle);
+  }
+  if (strncmp(data.mes,"time_b",6)==0) {
+    sendmsgto(respondto,dnsRTT.big);
+  }
+  if (strncmp(data.mes,"time_h",6)==0) {
+    sendmsgto(respondto,dnsRTT.huge);
   }
 }
 int sendmsgto(struct sockaddr_in to, uint64_t mesage) {

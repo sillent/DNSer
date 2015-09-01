@@ -10,7 +10,7 @@
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 
-typedef struct {
+typedef struct rtt_t{
   uint64_t tiny;      // < 10ms
   uint64_t small;     // 10-100ms
   uint64_t litle;     // 100-500ms
@@ -19,12 +19,12 @@ typedef struct {
   uint64_t huge;      // > 1600ms
 } rtt_t;
 
-typedef struct {
-  short id;
-  struct reqId_t *next;
+typedef struct reqId_t{
+  int set;
+  struct timeval tv;
 } reqId_t;
 
-extern reqId_t reqId;
+extern reqId_t reqId[65535];
 extern rtt_t    dnsRTT; 
 extern uint64_t dnsIncoming;
 extern uint64_t dnsOutgoing;
